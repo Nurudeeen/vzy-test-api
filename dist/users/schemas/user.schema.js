@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const user_status_enum_1 = require("../../enums/user-status.enum");
+const bcrypt = require("bcrypt");
 let User = class User {
 };
 exports.User = User;
@@ -27,6 +29,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true, enum: user_status_enum_1.UserStatus, default: user_status_enum_1.UserStatus.PENDING_PAYMENT }),
+    __metadata("design:type", String)
+], User.prototype, "status", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
@@ -34,4 +40,17 @@ exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+exports.UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
+    try {
+        const hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+        next();
+    }
+    catch (error) {
+        next(error);
+    }
+});
 //# sourceMappingURL=user.schema.js.map
