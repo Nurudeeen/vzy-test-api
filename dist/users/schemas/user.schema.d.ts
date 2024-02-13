@@ -25,6 +25,7 @@
 import { Document } from 'mongoose';
 export type UserDocument = User & Document;
 export declare class User {
+    id: string;
     firstName: string;
     lastName: string;
     email: string;

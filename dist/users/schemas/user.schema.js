@@ -13,9 +13,14 @@ exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const user_status_enum_1 = require("../../enums/user-status.enum");
 const bcrypt = require("bcrypt");
+const uuid_1 = require("uuid");
 let User = class User {
 };
 exports.User = User;
+__decorate([
+    (0, mongoose_1.Prop)({ default: () => (0, uuid_1.v4)() }),
+    __metadata("design:type", String)
+], User.prototype, "id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
@@ -25,7 +30,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "lastName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
@@ -37,7 +42,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 exports.User = User = __decorate([
-    (0, mongoose_1.Schema)()
+    (0, mongoose_1.Schema)({ timestamps: true })
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
 exports.UserSchema.pre('save', async function (next) {
@@ -53,4 +58,5 @@ exports.UserSchema.pre('save', async function (next) {
         next(error);
     }
 });
+exports.UserSchema.set('toJSON', { transform: function (doc, ret, options) { delete ret.password; delete ret._id; delete ret.__v; return ret; } });
 //# sourceMappingURL=user.schema.js.map
