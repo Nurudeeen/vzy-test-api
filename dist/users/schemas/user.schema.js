@@ -38,6 +38,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "dateOfBirth", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "customerId", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true, enum: user_status_enum_1.UserStatus, default: user_status_enum_1.UserStatus.PENDING_PAYMENT }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);

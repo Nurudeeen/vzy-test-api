@@ -30,6 +30,7 @@ export declare class User {
     lastName: string;
     email: string;
     dateOfBirth: string;
+    customerId: string;
     status: string;
     password: string;
 }

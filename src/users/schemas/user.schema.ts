@@ -23,6 +23,9 @@ export class User {
   @Prop()
   dateOfBirth: string;
 
+  @Prop()
+  customerId: string;
+
   @Prop({ required: true, enum: UserStatus, default: UserStatus.PENDING_PAYMENT })
   status: string;
 

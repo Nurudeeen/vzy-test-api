@@ -6,12 +6,15 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { StripeService } from 'src/stripe/stripe.service';
+import { PaymentPageDto } from 'src/stripe/dto/payment-page-dto';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly stripeService: StripeService
   ) {}
 
   @Post('register')
@@ -34,8 +37,8 @@ export class UsersController {
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid email or password');
     }
-    const payload = { email: user.email, id: user.id };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '1m' });
+    const payload = { email: user.email, id: user.id, customerId: user.customerId };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '7m' });
 
     return {
         statusCode: HttpStatus.OK,
@@ -55,5 +58,24 @@ export class UsersController {
         message: 'User record updated',
         data: updatedUser
       };
+  }
+
+  @Post('payment-page')
+  @UseGuards(JwtAuthGuard)
+
+  async createPaymentPage(@Body() paymentPageDto: PaymentPageDto, @Req() req) {
+    try {
+      const customerId = req.user.customerId;
+      const paymentPageUrl = await this.stripeService.createPaymentPage(paymentPageDto, customerId);
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Payment page created',
+        data:{ url: paymentPageUrl }
+      }
+    } catch (error) {
+      // Handle error
+      console.log(error)
+      return { message: 'Failed to create payment page', error: error.message };
+    }
   }
 }
