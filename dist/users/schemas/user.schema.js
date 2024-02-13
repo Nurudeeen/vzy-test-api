@@ -34,6 +34,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "dateOfBirth", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ required: true, enum: user_status_enum_1.UserStatus, default: user_status_enum_1.UserStatus.PENDING_PAYMENT }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
@@ -58,5 +62,5 @@ exports.UserSchema.pre('save', async function (next) {
         next(error);
     }
 });
-exports.UserSchema.set('toJSON', { transform: function (doc, ret, options) { delete ret.password; delete ret._id; delete ret.__v; return ret; } });
+exports.UserSchema.set('toJSON', { transform: function (_doc, ret, _options) { delete ret.password; delete ret._id; delete ret.__v; return ret; } });
 //# sourceMappingURL=user.schema.js.map

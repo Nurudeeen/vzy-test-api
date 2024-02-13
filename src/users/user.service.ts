@@ -1,7 +1,8 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -25,7 +26,17 @@ export class UsersService {
     try {
       return await this.userModel.findOne({ email }).exec();
     } catch (error) {
-      throw new HttpException('Could not find user', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('Could not find user', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async updateProfile(userId: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
+    const updateFields = { ...updateUserDto };
+    try {
+         return this.userModel.findOneAndUpdate({id: userId}, updateFields, { new: true, runValidators: true }).exec();
+    } catch (error) {
+        throw new HttpException('Could not update user record', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+   
   }
 }

@@ -1,9 +1,11 @@
 // src/users/users.controller.ts
-import { Controller, Post, Body, BadRequestException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, HttpStatus, UseGuards, Req, Patch } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @Controller('users')
 export class UsersController {
@@ -39,6 +41,19 @@ export class UsersController {
         statusCode: HttpStatus.OK,
         message: 'Login successfull',
         data: { token: accessToken }
+      };
+  }
+
+  @Patch('profile')
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    const userId = req.user.id;
+    const updatedUser = await this.usersService.updateProfile(userId, updateUserDto);
+
+    return {
+        statusCode: HttpStatus.OK,
+        message: 'User record updated',
+        data: updatedUser
       };
   }
 }

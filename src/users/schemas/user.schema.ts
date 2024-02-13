@@ -20,6 +20,9 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop()
+  dateOfBirth: string;
+
   @Prop({ required: true, enum: UserStatus, default: UserStatus.PENDING_PAYMENT })
   status: string;
 
@@ -43,6 +46,6 @@ UserSchema.pre<UserDocument>('save', async function (next) {
     }
   });
 
-UserSchema.set('toJSON', { transform: function(doc, ret, options) { delete ret.password; delete ret._id; delete ret.__v; return ret;} });
+UserSchema.set('toJSON', { transform: function(_doc, ret, _options) { delete ret.password; delete ret._id; delete ret.__v; return ret;} });
 
 
