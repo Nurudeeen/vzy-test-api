@@ -48,6 +48,14 @@ export class UsersService {
     }
   }
 
+  async findByUserId(id: string): Promise<UserDocument | null> {
+    try {
+      return await this.userModel.findOne({ id }).exec();
+    } catch (error) {
+      throw new HttpException('Could not find user', HttpStatus.FORBIDDEN);
+    }
+  }
+
   async updateProfile(userId: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
     const updateFields = { ...updateUserDto };
     try {

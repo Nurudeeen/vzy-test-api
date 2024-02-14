@@ -1,5 +1,5 @@
 // src/users/users.controller.ts
-import { Controller, Post, Body, BadRequestException, HttpStatus, UseGuards, Req, Patch } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, HttpStatus, UseGuards, Req, Patch, Get } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import * as bcrypt from 'bcrypt';
@@ -57,6 +57,20 @@ export class UsersController {
         statusCode: HttpStatus.OK,
         message: 'User record updated',
         data: updatedUser
+      };
+  }
+
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  async userProfile(@Req() req) {
+    const userId = req.user.id;
+    const user = await this.usersService.findByUserId(userId);
+
+    return {
+        statusCode: HttpStatus.OK,
+        message: 'User record fetched',
+        data: user
       };
   }
 
