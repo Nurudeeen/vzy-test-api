@@ -38,7 +38,7 @@ export class UsersController {
       throw new BadRequestException('Invalid email or password');
     }
     const payload = { email: user.email, id: user.id, customerId: user.customerId };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '7m' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1m' });
 
     return {
         statusCode: HttpStatus.OK,

@@ -58,7 +58,7 @@ export class StripeService {
           metadata: {
             id: customerId
           },
-          success_url: 'http://localhost:3000'
+          success_url: process.env.REDIRECT_URL
         });
   
         return paymentPage.url;
